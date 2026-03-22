@@ -1794,7 +1794,7 @@ export class Creature {
 }
 
 class CreatureSprite {
-	private static readonly XRAY_ALPHA = 0.3;
+	private static readonly XRAY_ALPHA = 0.65;
 
 	private _group: Phaser.Group;
 	private _sprite: Phaser.Sprite;
@@ -1881,7 +1881,7 @@ class CreatureSprite {
 		this._xrayGrayFilter =
 			typeof Phaser.Filter.Gray === 'function' ? new (Phaser.Filter.Gray as any)(phaser) : null;
 		if (this._xrayGrayFilter) {
-			this._xrayGrayFilter.gray = 0.92;
+			this._xrayGrayFilter.gray = 1.0;
 		}
 
 		this.setHex(creature.hexagons[size - 1]);
