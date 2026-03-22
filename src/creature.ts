@@ -1794,6 +1794,14 @@ export class Creature {
 }
 
 class CreatureSprite {
+	private static readonly XRAY_ALPHA = 0.3;
+	private static readonly XRAY_TINT_BY_TEAM: Record<PlayerID, number> = {
+		0: 0xff9f9f,
+		1: 0x9fc7ff,
+		2: 0xffd08a,
+		3: 0x9ff0a5,
+	};
+
 	private _group: Phaser.Group;
 	private _sprite: Phaser.Sprite;
 	private _hintGrp: Phaser.Group;
@@ -1965,9 +1973,10 @@ class CreatureSprite {
 	xray(enable: boolean) {
 		if (this._isXray === enable) return;
 		this._isXray = enable;
+		this._sprite.tint = enable ? CreatureSprite.XRAY_TINT_BY_TEAM[this._creatureTeam] : 0xffffff;
 		this._phaser.add
 			.tween(this._sprite)
-			.to({ alpha: enable ? 0.5 : 1.0 }, 250, Phaser.Easing.Linear.None)
+			.to({ alpha: enable ? CreatureSprite.XRAY_ALPHA : 1.0 }, 250, Phaser.Easing.Linear.None)
 			.start();
 		this._phaser.add
 			.tween(this._healthIndicatorGroup)
