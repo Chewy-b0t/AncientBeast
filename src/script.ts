@@ -59,7 +59,7 @@ $j(() => {
 		scrim.remove();
 	});
 	scrim.removeClass('loading');
-	renderPlayerModeType(G.multiplayer);
+	updatePlayerModeType();
 
 	// For the location rendering. The logic is in src/ui/locations.ts
 	const locations: Locations = new Locations();
@@ -164,8 +164,8 @@ $j(() => {
 	}
 
 	if (G.multiplayer) {
-		// TODO Remove after implementation 2 vs 2 in multiplayer mode
-		forceTwoPlayerMode();
+		// In multiplayer, default to P1 vs P2 (both enabled)
+		// Bot settings are handled by the bot checkboxes
 	}
 
 	// Allow button game options to slide in prematch screen
@@ -184,12 +184,11 @@ $j(() => {
 	$j('#createMatchButton').on('click', () => {
 		$j('.match-frame').hide();
 		$j('#gameSetup').show();
-		renderPlayerModeType(G.multiplayer);
+		updatePlayerModeType();
 		$j('#startMatchButton').show();
 		$j('#startButton').hide();
 
-		// TODO Remove after implementation 2 vs 2 in multiplayer mode
-		forceTwoPlayerMode();
+		// In multiplayer, bot settings are handled by the bot checkboxes
 	});
 
 	$j('#singleplayer').hide();
@@ -367,12 +366,14 @@ $j(() => {
 });
 
 /**
- * force 1 vs 1 game mode
- * should be removed after implementation 2 vs 2 in multiplayer mode
+ * Update the player mode text based on selected checkboxes.
+ * Shows [ Hotseat ] for singleplayer or [ Online ] for multiplayer.
+ * @returns {Object} JQuery<HTMLElement>
  */
-function forceTwoPlayerMode() {
-	$j('#p2').trigger('click');
-	$j('#p4').prop('disabled', true);
+function updatePlayerModeType() {
+	const playerModeType = $j('#playerModeType');
+	const isMultiPlayer = G.multiplayer;
+	return isMultiPlayer ? playerModeType.text('[ Online ]') : playerModeType.text('[ Hotseat ]');
 }
 
 /**
@@ -433,22 +434,30 @@ function getLogin() {
 }
 
 /**
- * Render the player mode text inside game form
- * @param {Boolean} isMultiPlayer Is playing in online multiplayer mode or hotSeat mode
- * @returns {Object} JQuery<HTMLElement>
- */
-function renderPlayerModeType(isMultiPlayer) {
-	const playerModeType = $j('#playerModeType');
-	return isMultiPlayer ? playerModeType.text('[ Online ]') : playerModeType.text('[ Hotseat ]');
-}
-
-/**
  * Generate game config from form and return it.
  * @return {Partial<GameConfig>} The game config.
  */
 export function getGameConfig() {
+	// Get selected players from checkboxes
+	const selectedPlayers: number[] = [];
+	$j('input[name="playerMode"]:checked').each(function () {
+		selectedPlayers.push(parseInt($j(this).val() as string, 10));
+	});
+	
+	// Get bot settings from checkboxes
+	const botPlayers: { [key: number]: boolean } = {};
+	$j('input[name="botMode"]:checked').each(function () {
+		const playerNum = parseInt($j(this).val() as string, 10);
+		botPlayers[playerNum] = true;
+	});
+	
+	// Calculate playerMode based on number of selected players
+	const playerMode = selectedPlayers.length;
+	
 	const defaultConfig = {
-		playerMode: parseInt($j('input[name="playerMode"]:checked').val() as string, 10),
+		playerMode: playerMode,
+		selectedPlayers: selectedPlayers,
+		botPlayers: botPlayers,
 		creaLimitNbr: parseInt($j('input[name="activeUnits"]:checked').val() as string, 10), // DP counts as One
 		unitDrops: parseInt($j('input[name="unitDrops"]:checked').val() as string, 10),
 		abilityUpgrades: parseInt($j('input[name="abilityUpgrades"]:checked').val() as string, 10),

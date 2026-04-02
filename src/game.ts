@@ -126,6 +126,8 @@ export default class Game {
 	background_image?: string;
 
 	playerMode?: number;
+	selectedPlayers?: number[];
+	botPlayers?: { [key: number]: boolean };
 
 	UI?: any;
 
@@ -544,8 +546,13 @@ export default class Game {
 		// Remove loading screen
 		$j('#matchMaking').hide();
 
-		for (let i = 0; i < playerMode; i++) {
-			const player = new Player(i as PlayerID, this);
+		// Use selectedPlayers if available, otherwise fall back to sequential player IDs
+		const playerIds = this.selectedPlayers && this.selectedPlayers.length > 0 
+			? this.selectedPlayers 
+			: Array.from({ length: playerMode }, (_, i) => i);
+
+		for (const playerId of playerIds) {
+			const player = new Player(playerId as PlayerID, this);
 			this.players.push(player);
 
 			// Initialize players' starting positions

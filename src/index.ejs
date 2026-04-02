@@ -71,12 +71,27 @@
 						<form id="gameSetup">
 							<div class="game-options border-frame">
 								<div class="gameOption">
-									<h2>Player Mode&nbsp;<span id="playerModeType"></span></h2>
-									<div id="playerMode" class="typeRadio">
-										<input type="radio" id="p2" name="playerMode" value="2" checked>
-										<label for="p2" class="dragIt">1 versus 1</label>
-										<input type="radio" id="p4" name="playerMode" value="4">
-										<label for="p4" class="dragIt">2 versus 2</label>
+									<h2>Active Players&nbsp;<span id="playerModeType"></span></h2>
+									<div id="playerMode" class="typeRadio player-checkboxes">
+										<input type="checkbox" id="p1" name="playerMode" value="1" checked>
+										<label for="p1" class="dragIt">P1</label>
+										<input type="checkbox" id="p2" name="playerMode" value="2" checked>
+										<label for="p2" class="dragIt">P2</label>
+										<input type="checkbox" id="p3" name="playerMode" value="3">
+										<label for="p3" class="dragIt">P3</label>
+										<input type="checkbox" id="p4" name="playerMode" value="4">
+										<label for="p4" class="dragIt">P4</label>
+									</div>
+								</div>
+								<div class="gameOption">
+									<h2>Bot Control</h2>
+									<div id="botControl" class="typeRadio bot-checkboxes">
+										<input type="checkbox" id="botP2" name="botMode" value="2" checked>
+										<label for="botP2" class="dragIt">Bot P2</label>
+										<input type="checkbox" id="botP3" name="botMode" value="3" checked>
+										<label for="botP3" class="dragIt">Bot P3</label>
+										<input type="checkbox" id="botP4" name="botMode" value="4" checked>
+										<label for="botP4" class="dragIt">Bot P4</label>
 									</div>
 								</div>
 								<div class="gameOption">
